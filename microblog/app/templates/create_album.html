@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page-container">
+    
+    <div class="central-header">
+        <div class="logo-wrapper">
+            <img src="{{ url_for('static', filename='SnapStash_Logo_200.png') }}" class="icon">
+            <span class="logo-text">SnapStash</span>
+        </div>
+    </div>
+
+    <div class="form-section-standalone">
+        <h2 class="form-title">Create an Album</h2>
+        <p class="hero-subtext" style="margin-top: -10px; margin-bottom: 20px;">Photos preserve what time forgets</p>
+        
+        <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 25px;">
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="input-group-custom text-start">
+                <label>Album Title</label>
+                {{ form.title(class="form-control", placeholder="Enter Album Title") }}
+            </div>
+
+            <div class="input-group-custom text-start">
+                <label for="file-upload">Select Pictures</label>
+                <label for="file-upload" class="btn-outline d-block text-center" style="cursor: pointer; padding: 12px; border-radius: 12px;">
+                    CHOOSE FILES
+                </label>
+                <input type="file" id="file-upload" name="pictures" multiple style="display: none;">
+            </div>
+
+            <div class="mt-4">
+                {{ form.submit(class="btn-primary", value="SAVE ALBUM") }}
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ url_for('index') }}" class="signup-text" style="text-decoration: none;">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
