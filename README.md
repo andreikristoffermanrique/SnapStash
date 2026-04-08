@@ -15,5 +15,3 @@ Group Members:
 2. Crimson Cledera
 3. Andrei Kristoffer Manrique
 4. Ma. Eloisa Anne Lozada
-
-
