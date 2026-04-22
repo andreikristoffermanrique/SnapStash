@@ -5,7 +5,7 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
 .login-page-container {
     width: 100%; height: 100vh;
     background: linear-gradient(rgba(10, 20, 40, 0.75), rgba(10, 20, 40, 0.85)), 
-                url('camera_bg_1920v2.jpg') no-repeat center center/cover;
+                url('assets/camera_bg_1920v2.jpg') no-repeat center center/cover;
     display: flex; 
     flex-direction: column; 
     align-items: center; 

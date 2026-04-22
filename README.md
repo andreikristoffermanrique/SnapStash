@@ -6,9 +6,9 @@ By addressing the common problem of messy and unorganized digital photos, SnapSt
 
 How to run:
 1. Environment Setup: Create a virtual environment and activate it to keep your dependencies isolated
-3. Install Dependencies: With the virtual environment activated, install the necessary Flask extensions and project utilities.
-4. Database Initialization: Prepare the database schema using Flask-Migrate.
-5. Launch the Application: Start the development server.
+3. Install Dependencies: With the virtual environment activated, install the necessary Flask extensions and project utilities. "pip install -r requirements.txt"
+4. Database Initialization: Prepare the database schema using Flask-Migrate. "flask db upgrade"
+5. Launch the Application: Start the development server. "flask run"
 
 Group Members:
 1. Bernadette Buenvenida

@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_migrate import upgrade
 from flask_login import LoginManager
 
 app = Flask(__name__)
@@ -21,3 +22,7 @@ def load_user(id):
     return User.query.get(int(id))
 
 from app import routes, models
+
+
+with app.app_context():
+    upgrade()

@@ -4,21 +4,29 @@
 <div class="login-page-container">
     <div class="central-header">
         <div class="logo-wrapper">
-            <img src="{{ url_for('static', filename='SnapStash_Logo_200.png') }}" class="icon">
+            <img src="{{ url_for('static', filename='assets/SnapStash_Logo_200.png') }}" class="icon">
             <span class="logo-text" style="font-size: 60px !important;">SnapStash</span>
         </div>
     </div>
 
     <div class="dashboard-container text-center" style="max-width: 1200px; width: 95%;">
         
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ url_for('index') }}" class="back-link" style="color: white; text-decoration: none; font-size: 24px;">Back</a>
-            <div>
-                <h1 class="display-title" style="font-size: 80px; font-weight: 800; margin: 0;">MY ALBUM</h1>
-                <p class="hero-subtext-mini" style="letter-spacing: 3px;">SNAP.STORE.SMILE.REPEAT.</p>
-            </div>
-            <div style="width: 60px;"></div> </div>
+        <div class="header-main-row" style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
+            
+            <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 4px; z-index: 10;">
+                &lt; Back
+            </a>
 
+            <div>
+                <h1 class="display-title" style="font-size: 70px; font-weight: 800; margin: 0; line-height: 1;">MY ALBUM</h1>
+                <p class="hero-subtext-mini" style="letter-spacing: 3px; margin-top: 5px; opacity: 0.7;">SNAP.STORE.SMILE.REPEAT.</p>
+            </div>
+
+           <button type="submit" form="delete-form" id="delete-btn" disabled="true" 
+        style="position: absolute; right: 0; background: rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.4); padding: 10px 20px; border-radius: 5px; border: none; font-weight: 700; font-size: 13px; cursor: not-allowed; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; z-index: 10;">
+    DELETE SELECTED PICTURES
+</button>
+        </div>
         <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 40px;">
             
             <div class="album-sidebar" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
@@ -30,20 +38,130 @@
                 {% endfor %}
             </div>
 
-            <div class="photo-display-area" style="flex: 2; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 20px; min-height: 500px;">
-                <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
-                    {% for photo in selected_album.photos %}
-                        <div class="photo-item">
-                            <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" 
-                                 style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px;">
-                        </div>
-                    {% else %}
-                        <p class="text-white-50 mt-5">Select an album to view photos</p>
-                    {% endfor %}
-                </div>
-            </div>
+            <div class="photo-display-area" style="flex: 2; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 25px; min-height: 500px; border: 1px solid rgba(255,255,255,0.05);">
+                
+                <form id="delete-form" action="{{ url_for('delete_photos', album_id=selected_album.id) }}" method="POST">
+                    <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+                        
+                        {% for photo in selected_album.photos %}
+                            <div class="photo-item" style="position: relative; cursor: pointer; transition: transform 0.3s ease;" onclick="toggleSelect(this, '{{ photo.id }}')">
+                                <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" 
+                                     class="album-img"
+                                     style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px; border: 3px solid transparent; transition: 0.2s;">
+                                
+                                <div class="select-indicator">✓</div>
+                                
+                                <input type="checkbox" name="photo_ids" value="{{ photo.id }}" id="check-{{ photo.id }}" style="display: none;">
+                            </div>
+                        {% endfor %}
 
+                        {% if selected_album %}
+                        <a href="{{ url_for('add_photo', album_id=selected_album.id) }}" class="add-photo-card" style="text-decoration: none;">
+                            <div class="add-photo-btn" style="width: 100%; aspect-ratio: 1/1; border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; color: rgba(255,255,255,0.5);">
+                                <span style="font-size: 40px; line-height: 1;">+</span>
+                                <span style="font-size: 14px; font-weight: 600; margin-top: 5px;">Add Photo</span>
+                            </div>
+                        </a>
+                        {% endif %}
+
+                    </div>
+                </form> </div>
         </div>
     </div>
 </div>
+
+<script>
+function toggleSelect(element, id) {
+    const checkbox = document.getElementById('check-' + id);
+    const img = element.querySelector('.album-img');
+    const indicator = element.querySelector('.select-indicator');
+    const deleteBtn = document.getElementById('delete-btn');
+
+    // Toggle the checkbox
+    checkbox.checked = !checkbox.checked;
+
+    // Toggle visual selection styles
+    if (checkbox.checked) {
+        img.classList.add('selected-img');
+        indicator.style.display = 'flex';
+    } else {
+        img.classList.remove('selected-img');
+        indicator.style.display = 'none';
+    }
+
+    // Check how many are selected
+    const checkedCount = document.querySelectorAll('input[name="photo_ids"]:checked').length;
+    
+    if (checkedCount > 0) {
+        // ACTIVATE BUTTON: Use lowercase 'false'
+        deleteBtn.disabled = false; 
+        deleteBtn.style.background = '#ff4757'; 
+        deleteBtn.style.color = 'white'; 
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.opacity = '1';
+    } else {
+        // DEACTIVATE BUTTON: Use lowercase 'true'
+        deleteBtn.disabled = true;
+        deleteBtn.style.background = 'rgba(255, 255, 255, 0.1)'; 
+        deleteBtn.style.color = 'rgba(255,255,255,0.4)'; 
+        deleteBtn.style.cursor = 'not-allowed';
+    }
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Styling for the selection overlay from image_a1d5be.jpg */
+    .selected-img {
+        border-color: #ff4757 !important;
+        opacity: 0.7;
+    }
+
+    .select-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 5;
+    }
+
+    /* Grid Hover Effects */
+    .photo-item:hover { transform: scale(1.03); }
+
+    .add-photo-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #7289da;
+        color: white !important;
+    }
+    
+    /* Navigation Hover Effects */
+    .back-link:hover, #delete-btn:not([disabled]):hover {
+        opacity: 0.6;
+        transform: translateY(-2px); 
+        transition: 0.2s;
+    }
+    
+    #delete-btn[disabled] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    /* Sidebar active state styling */
+    .active-pill {
+        background: #7289da !important;
+        color: white !important;
+        font-weight: 700;
+    }
+</style>
 {% endblock %}
