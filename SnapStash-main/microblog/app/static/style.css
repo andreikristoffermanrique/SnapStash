@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif !important; overflow: hidden; }
+
+.login-page-container {
+    width: 100%; height: 100vh;
+    background: linear-gradient(rgba(10, 20, 40, 0.75), rgba(10, 20, 40, 0.85)), 
+                url('camera_bg_1920v2.jpg') no-repeat center center/cover;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.icon {
+  width: 100px;
+  height: 100px;
+}
+
+.central-header {
+    margin-bottom: 50px; 
+    text-align: center;
+}
+
+.logo-wrapper { display: flex; align-items: center; justify-content: center; gap: 20px; }
+
+.logo-text { 
+    font-size: 100px !important; 
+    font-weight: 1000 !important; 
+    color: #fff !important; 
+    letter-spacing: -2px; 
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.camera-icon { 
+    background: #4da3ff; 
+    padding: 12px 18px; 
+    border-radius: 15px; 
+    font-size: 40px; 
+}
+
+.flash-wrapper { position: absolute; top: 20px; z-index: 100; }
+.alert-custom { background: rgba(255, 107, 107, 0.2); 
+    border: 1px solid #ff6b6b; color: #ff6b6b; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(10px); margin-bottom: 10px; }
+
+.error-msg { color: #ff6b6b; font-size: 11px; margin-top: 5px; display: block; }
+
+.login-card {
+    width: 950px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px);
+    border-radius: 30px; padding: 50px; border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.login-content { display: flex; gap: 80px; align-items: center; }
+.hero-section { flex: 1.2; }
+.form-section { flex: 1; max-width: 380px; }
+
+.hero-section h1 { font-size: 52px !important; font-weight: 800 !important; color: #fff !important; line-height: 1.1; }
+.blue-text { color: #4da3ff; }
+.hero-subtext { color: rgba(255, 255, 255, 0.6); margin: 25px 0 35px; font-size: 15px; }
+
+.btn-outline { border: 1px solid rgba(77, 163, 255, 0.5); color: #fff; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-size: 14px; }
+
+.form-title { color: #fff; font-size: 20px; margin-bottom: 25px; }
+.input-group-custom { margin-bottom: 20px; }
+.input-group-custom label { color: rgba(255, 255, 255, 0.5); font-size: 12px; display: block; margin-bottom: 5px; }
+
+.form-control {
+    background: rgba(0, 0, 0, 0.3) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important; color: #fff !important; padding: 12px !important;
+}
+
+.btn-primary {
+    background: #4da3ff !important; border: none !important; width: 100%;
+    padding: 15px !important; border-radius: 12px !important; font-weight: 700 !important;
+    text-transform: uppercase; margin-top: 10px;
+}
+
+.dashboard-container {
+    width: 90%;
+    max-width: 1100px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(25px);
+    border-radius: 30px;
+    padding: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    color: white;
+    margin-top: 20px;
+}
+
+.btn-add {
+    background: #4da3ff;
+    color: white !important;
+    padding: 10px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.btn-add:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+}
+
+.form-section-standalone {
+    width: 450px; 
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(25px);
+    border-radius: 30px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+.check-label { color: rgba(255, 255, 255, 0.7); font-size: 13px; margin-left: 5px; }
+.signup-text { color: rgba(255, 255, 255, 0.5); font-size: 13px; text-align: center; margin-top: 20px; }
+.signup-text a { color: #4da3ff; text-decoration: none; font-weight: 600; }
+
+.btn-album-action {
+    background: #4740d1; /* The Figma Blue/Purple */
+    color: white !important;
+    width: 100%;
+    max-width: 450px; /* Adjust based on your card width */
+    padding: 18px 0;
+    border-radius: 50px; /* Makes it a pill shape */
+    text-decoration: none !important;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-align: center;
+    display: block;
+    transition: 0.3s ease;
+    border: none;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-album-action:hover {
+    background: #3630b5;
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Sidebar Pill Buttons */
+.btn-album-sidebar {
+    background: #4740d1; /* Figma Blue/Purple */
+    color: white !important;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    transition: 0.3s;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-album-sidebar:hover {
+    background: #3630b5;
+    transform: scale(1.05);
+}
+
+/* Style for the currently selected album button */
+.active-pill {
+    background: #322ba3;
+    border: 2px solid rgba(255,255,255,0.4);
+    box-shadow: 0 0 15px rgba(77, 163, 255, 0.4);
+}
+
+.display-title {
+    color: white;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page-container" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+    <div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 40px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.1); width: 400px;">
+        <h2 style="color: white;">Select Photos</h2>
+        <p style="color: rgba(255,255,255,0.6);">Adding to <strong>{{ album.title }}</strong></p>
+
+        <form id="upload-form" method="POST" enctype="multipart/form-data">
+            <input type="file" id="file-picker" name="pictures" multiple style="display: none;" onchange="submitForm()">
+            
+            <div onclick="document.getElementById('file-picker').click()" style="background: rgba(114, 137, 218, 0.1); border: 2px dashed #7289da; padding: 40px; border-radius: 20px; cursor: pointer; color: white; margin: 20px 0;">
+                <span style="font-size: 40px;">📂</span>
+                <p>Click to select from your folders</p>
+            </div>
+        </form>
+        
+        <a href="{{ url_for('my_album', album_id=album.id) }}" style="color: rgba(255,255,255,0.4); text-decoration: none;">Cancel</a>
+    </div>
+</div>
+
+<script>
+// This function automatically uploads your photos once you click 'Open'
+function submitForm() {
+    document.getElementById('upload-form').submit();
+}
+
+// THIS IS THE MOST IMPORTANT PART:
+// When the page loads, automatically click the hidden file input
+// This triggers your file selector window immediately.
+window.onload = function() {
+    document.getElementById('file-picker').click();
+}
+</script>
+{% endblock %}

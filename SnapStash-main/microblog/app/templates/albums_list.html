@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page-container">
+    <div class="central-header">
+        <div class="logo-wrapper">
+            <img src="{{ url_for('static', filename='SnapStash_Logo_200.png') }}" class="icon">
+            <span class="logo-text" style="font-size: 60px !important;">SnapStash</span>
+        </div>
+    </div>
+
+    <div class="dashboard-container text-center" style="max-width: 1000px; width: 95%;">
+        
+        <div class="header-main-row" style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; width: 100%;">
+            <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 4px; z-index: 10;">
+                &lt; Back
+            </a>
+            <h1 class="display-title" style="font-size: 60px; font-weight: 800; margin: 0; color: white; text-transform: uppercase;">YOUR COLLECTIONS</h1>
+        </div>
+
+        <div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 50px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                {% for album in albums %}
+                <a href="{{ url_for('my_album', album_id=album.id) }}" class="btn-primary-custom" style="width: 450px; background: #5865f2; color: white; padding: 18px; border-radius: 50px; text-decoration: none; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;">
+                    View Album: {{ album.title }}
+                </a>
+                {% endfor %}
+                
+                {% if not albums %}
+                <p style="color: rgba(255,255,255,0.4); font-size: 18px;">No albums found. Go back to create one!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .btn-primary-custom:hover {
+        background: #4752c4 !important;
+        transform: scale(1.02);
+    }
+    
+    .back-link:hover {
+        opacity: 0.6;
+        transform: translateX(-5px); 
+        transition: 0.2s;
+    }
+</style>
+{% endblock %}
