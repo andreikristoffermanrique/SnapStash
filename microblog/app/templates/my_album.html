@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page-container">
+    <div class="central-header">
+        <div class="logo-wrapper">
+            <img src="{{ url_for('static', filename='SnapStash_Logo_200.png') }}" class="icon">
+            <span class="logo-text" style="font-size: 60px !important;">SnapStash</span>
+        </div>
+    </div>
+
+    <div class="dashboard-container text-center" style="max-width: 1200px; width: 95%;">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ url_for('index') }}" class="back-link" style="color: white; text-decoration: none; font-size: 24px;">Back</a>
+            <div>
+                <h1 class="display-title" style="font-size: 80px; font-weight: 800; margin: 0;">MY ALBUM</h1>
+                <p class="hero-subtext-mini" style="letter-spacing: 3px;">SNAP.STORE.SMILE.REPEAT.</p>
+            </div>
+            <div style="width: 60px;"></div> </div>
+
+        <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 40px;">
+            
+            <div class="album-sidebar" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                {% for album in albums %}
+                    <a href="{{ url_for('my_album', album_id=album.id) }}" 
+                       class="btn-album-sidebar {% if album.id == selected_album.id %}active-pill{% endif %}">
+                        {{ album.title }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div class="photo-display-area" style="flex: 2; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 20px; min-height: 500px;">
+                <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+                    {% for photo in selected_album.photos %}
+                        <div class="photo-item">
+                            <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" 
+                                 style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px;">
+                        </div>
+                    {% else %}
+                        <p class="text-white-50 mt-5">Select an album to view photos</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
