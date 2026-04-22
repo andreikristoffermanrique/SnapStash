@@ -5,10 +5,16 @@ SnapStash is designed to promote accessibility, consistency, and user-friendline
 By addressing the common problem of messy and unorganized digital photos, SnapStash provides a clean and intuitive interface that helps users efficiently manage and relive their captured moments anytime.
 
 How to run:
-1. Environment Setup: Create a virtual environment and activate it to keep your dependencies isolated
-3. Install Dependencies: With the virtual environment activated, install the necessary Flask extensions and project utilities. "pip install -r requirements.txt"
-4. Database Initialization: Prepare the database schema using Flask-Migrate. "flask db upgrade"
-5. Launch the Application: Start the development server. "flask run"
+1. **Set up a virtual environment: **
+   Create a virtual environment and activate it to keep your dependencies isolated
+   Windows:
+     python -m venv venv
+     vem\Scripts\activate
+2. **Install dependencies**
+   Install all required pacakages:
+     pip install -r requirements.txt
+3. **Run the application**
+     flask run
 
 Group Members:
 1. Bernadette Buenvenida
