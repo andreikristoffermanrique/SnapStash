@@ -6,7 +6,7 @@ By addressing the common problem of messy and unorganized digital photos, SnapSt
 
 How to run:
 1. **Set up a virtual environment: **
-   Create a virtual environment and activate it to keep your dependencies isolated
+   <br>Create a virtual environment and activate it to keep your dependencies isolated</br>
    Windows:
      python -m venv venv
      vem\Scripts\activate
