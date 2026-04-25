@@ -10,12 +10,18 @@ By addressing the common problem of messy and unorganized digital photos, SnapSt
 
 **How to run (Windows):**
 1. **Set up a virtual environment:**<br>
-   python -m venv venv<br>
-   venv\Scripts\activate<br>
+   ```bash
+python -m venv venv
+venv\Scripts\activate
+```
 2. **Install dependencies:**<br>
-   pip install -r requirements.txt<br>
+  ```bash
+pip install -r requirements.txt
+```
 3. **Run the application:**<br>
-   flask run<br>
+   ```bash
+flask run
+```
 
 <br>
 
