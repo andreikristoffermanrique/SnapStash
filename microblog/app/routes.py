@@ -14,14 +14,12 @@ def home():
 @app.route('/index')
 @login_required
 def index():
-    # Only show the welcome message and a link to the albums page
     return render_template('index.html', user=current_user)
 
 # --- NEW DEDICATED ALBUMS PAGE ---
 @app.route('/albums_list')
 @login_required
 def albums_list():
-    # This page will now hold all the "VIEW ALBUM" buttons
     albums = current_user.albums.all()
     return render_template('albums_list.html', albums=albums)
 
@@ -56,7 +54,7 @@ def register():
 def create_album():
     form = AlbumForm()
     if form.validate_on_submit():
-        new_album = Album(title=form.title.data, owner=current_user)
+        new_album = Album(title=form.title.data, description=form.description.data, owner=current_user)
         db.session.add(new_album)
         db.session.commit()
 
@@ -73,8 +71,6 @@ def create_album():
         flash('Album and photos created!')
         return redirect(url_for('albums_list'))
     
-    # FIX: Ensure we use the template meant for creating new albums, 
-    # not the one that requires an existing 'album' variable.
     return render_template('create_album.html', form=form)
 
 @app.route('/logout')
@@ -111,7 +107,6 @@ def add_photo(album_id):
 def delete_photos(album_id):
     album = Album.query.get_or_404(album_id)
     
-    # Only the owner can delete
     if album.owner != current_user:
         return redirect(url_for('index'))
 
@@ -119,12 +114,55 @@ def delete_photos(album_id):
     for photo_id in photo_ids:
         photo = Photo.query.get(photo_id)
         if photo and photo.album_id == album.id:
-            # Delete physical file
             file_path = os.path.join(app.root_path, 'static/uploads', photo.filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
-            # Delete database record
             db.session.delete(photo)
             
     db.session.commit()
     return redirect(url_for('my_album', album_id=album.id))
+
+@app.route('/album/<int:album_id>/edit', methods=['POST'])
+@login_required
+def edit_album(album_id):
+    album = Album.query.get_or_404(album_id)
+
+    if album.owner != current_user:
+        flash('You do not have permission to edit this album.')
+        return redirect(url_for('index'))
+
+    new_title = request.form.get('title', '').strip()
+    new_description = request.form.get('description', '').strip()
+
+    if not new_title:
+        flash('Album title cannot be empty.')
+        return redirect(url_for('my_album', album_id=album_id))
+
+    album.title = new_title
+    album.description = new_description
+    db.session.commit()
+
+    flash('Album updated successfully!')
+    return redirect(url_for('my_album', album_id=album.id))
+
+@app.route('/album/<int:album_id>/delete', methods=['POST'])
+@login_required
+def delete_album(album_id):
+    album = Album.query.get_or_404(album_id)
+
+    if album.owner != current_user:
+        flash('You do not have permission to delete this album.')
+        return redirect(url_for('index'))
+
+    # Delete all photo files from disk
+    for photo in album.photos.all():
+        file_path = os.path.join(app.root_path, 'static/uploads', photo.filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        db.session.delete(photo)
+
+    db.session.delete(album)
+    db.session.commit()
+
+    flash(f'Album "{album.title}" has been deleted.')
+    return redirect(url_for('albums_list'))

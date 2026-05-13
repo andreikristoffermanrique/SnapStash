@@ -9,106 +9,291 @@
         </div>
     </div>
 
-    <!-- Increased max-width to 1400px for a wider layout -->
     <div class="dashboard-container text-center" style="max-width: 1400px; width: 95%;">
         
         <div class="header-main-row" style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
             
-            <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 4px; z-index: 10;">
+            <a href="{{ url_for('albums_list') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 4px; z-index: 10;">
                 &lt; Back
             </a>
 
-            <div>
-                <h1 class="display-title" style="font-size: 70px; font-weight: 800; margin: 0; line-height: 1;">MY ALBUM</h1>
-                <p class="hero-subtext-mini" style="letter-spacing: 3px; margin-top: 5px; opacity: 0.7;">SNAP.STORE.SMILE.REPEAT.</p>
+            <!-- VIEW MODE: Title & Description -->
+            <div id="view-mode-title">
+                <h1 class="display-title" style="font-size: 70px; font-weight: 800; margin: 0; line-height: 1;">
+                    {{ selected_album.title | upper }}
+                </h1>
+                {% if selected_album.description %}
+                <p id="view-description" style="color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-top: 8px; font-size: 14px;">
+                    {{ selected_album.description }}
+                </p>
+                {% else %}
+                <p id="view-description" style="color: rgba(255,255,255,0.2); letter-spacing: 2px; margin-top: 8px; font-size: 14px; font-style: italic;">
+                    No description
+                </p>
+                {% endif %}
             </div>
 
-           <button type="submit" form="delete-form" id="delete-btn" disabled="true" 
-        style="position: absolute; right: 0; background: rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.4); padding: 10px 20px; border-radius: 5px; border: none; font-weight: 700; font-size: 13px; cursor: not-allowed; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; z-index: 10;">
-    DELETE SELECTED PICTURES
-</button>
+            <!-- EDIT MODE: Inline form for title & description -->
+            <div id="edit-mode-title" style="display: none; flex-direction: column; align-items: center; gap: 10px; width: 60%;">
+                <input id="edit-title-input" type="text" value="{{ selected_album.title }}"
+                    style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: white; border-radius: 12px; padding: 10px 18px; font-size: 28px; font-weight: 800; text-align: center; width: 100%; outline: none; letter-spacing: 1px;">
+                <input id="edit-desc-input" type="text" value="{{ selected_album.description or '' }}" placeholder="Add a description..."
+                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border-radius: 10px; padding: 8px 16px; font-size: 14px; text-align: center; width: 100%; outline: none;">
+            </div>
+
+            <!-- Right-side action buttons -->
+            <div id="view-actions" style="position: absolute; right: 0; display: flex; gap: 10px; align-items: center; z-index: 10;">
+                <!-- EDIT button -->
+                <button id="edit-btn" onclick="enterEditMode()"
+                    style="background: rgba(88, 101, 242, 0.2); color: #7289da; padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(88,101,242,0.4); font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">
+                    EDIT
+                </button>
+            </div>
+
+            <!-- Edit mode action buttons -->
+            <div id="edit-actions" style="position: absolute; right: 0; display: none; flex-direction: column; gap: 8px; align-items: flex-end; z-index: 10;">
+                <button onclick="saveEdits()" id="save-btn"
+                    style="background: #5865f2; color: white; padding: 10px 22px; border-radius: 8px; border: none; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 180px;">
+                    SAVE CHANGES
+                </button>
+                <button onclick="exitEditMode()"
+                    style="background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); padding: 8px 22px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-weight: 600; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 180px;">
+                    CANCEL
+                </button>
+                <button type="submit" form="delete-form" id="delete-btn" disabled
+                    style="background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); padding: 8px 22px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-weight: 600; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 180px;">
+                    DELETE SELECTED
+                </button>
+                <button onclick="confirmDeleteAlbum()"
+                    style="background: rgba(255, 71, 87, 0.15); color: #ff4757; padding: 8px 22px; border-radius: 8px; border: 1px solid rgba(255,71,87,0.35); font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 180px;">
+                    DELETE ALBUM
+                </button>
+            </div>
+        </div>
+
+        <!-- Edit mode hint bar -->
+        <div id="edit-hint" style="display: none; background: rgba(88,101,242,0.12); border: 1px solid rgba(88,101,242,0.3); border-radius: 10px; padding: 10px 20px; margin-bottom: 16px; color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 0.5px; text-align: center;">
+            <strong>Edit mode</strong>
         </div>
         
-        <!-- Removed the sidebar and set the photo area to take up 100% width -->
-        <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 40px; width: 100%;">
-            
+        <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 10px; width: 100%;">
             <div class="photo-display-area" style="width: 100%; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 25px; min-height: 500px; border: 1px solid rgba(255,255,255,0.05);">
                 
+                <!-- DELETE FORM (wraps photos) -->
                 <form id="delete-form" action="{{ url_for('delete_photos', album_id=selected_album.id) }}" method="POST">
-                    <!-- Adjusted grid minmax to 200px to balance the wider screen -->
                     <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
                         
                         {% for photo in selected_album.photos %}
-                            <div class="photo-item" style="position: relative; cursor: pointer; transition: transform 0.3s ease;" onclick="toggleSelect(this, '{{ photo.id }}')">
-                                <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" 
-                                     class="album-img"
-                                     style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px; border: 3px solid transparent; transition: 0.2s;">
-                                
-                                <div class="select-indicator">✓</div>
-                                
-                                <input type="checkbox" name="photo_ids" value="{{ photo.id }}" id="check-{{ photo.id }}" style="display: none;">
-                            </div>
+                        <div class="photo-item" style="position: relative; transition: transform 0.3s ease;">
+                            <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+                                 class="album-img"
+                                 onclick="handleImgClick(event, this.src, this.closest('.photo-item'), '{{ photo.id }}')"
+                                 style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px; border: 3px solid transparent; transition: 0.2s; cursor: pointer;">
+                            
+                            <div class="select-toggle" onclick="toggleSelect(this.closest('.photo-item'), '{{ photo.id }}')"></div>
+                            <div class="select-indicator">✓</div>
+                            <input type="checkbox" name="photo_ids" value="{{ photo.id }}" id="check-{{ photo.id }}" style="display: none;">
+                        </div>
                         {% endfor %}
 
-                        {% if selected_album %}
-                        <a href="{{ url_for('add_photo', album_id=selected_album.id) }}" class="add-photo-card" style="text-decoration: none;">
-                            <div class="add-photo-btn" style="width: 100%; aspect-ratio: 1/1; border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; color: rgba(255,255,255,0.5);">
-                                <span style="font-size: 40px; line-height: 1;">+</span>
-                                <span style="font-size: 14px; font-weight: 600; margin-top: 5px;">Add Photo</span>
-                            </div>
-                        </a>
-                        {% endif %}
+                        <!-- Add Photo card -->
+                        <div id="add-photo-card" class="add-photo-btn" style="width: 100%; aspect-ratio: 1/1; border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; color: rgba(255,255,255,0.5); cursor: pointer;">
+                            <span style="font-size: 40px; line-height: 1;">+</span>
+                            <span style="font-size: 14px; font-weight: 600; margin-top: 5px;">Add Photo</span>
+                        </div>
 
                     </div>
-                </form> 
+                </form>
+
+                <!-- ADD PHOTO FORM -->
+                <form id="add-photo-form" action="{{ url_for('add_photo', album_id=selected_album.id) }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="add-file-picker" name="pictures" multiple style="display: none;">
+                </form>
+
             </div>
         </div>
     </div>
 </div>
 
+<!-- LIGHTBOX -->
+<div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+    <img id="lightbox-img" src="" style="max-width:90vw; max-height:90vh; border-radius:15px; box-shadow:0 20px 60px rgba(0,0,0,0.8); object-fit:contain;">
+    <button onclick="closeLightbox()" style="position:fixed; top:25px; right:35px; background:none; border:none; color:white; font-size:40px; cursor:pointer; line-height:1;">&times;</button>
+</div>
+
+<!-- DELETE ALBUM form (hidden) -->
+<form id="delete-album-form" action="{{ url_for('delete_album', album_id=selected_album.id) }}" method="POST" style="display:none;"></form>
+
+<!-- EDIT ALBUM form (hidden, submitted via JS) -->
+<form id="edit-album-form" action="{{ url_for('edit_album', album_id=selected_album.id) }}" method="POST" style="display:none;">
+    <input type="hidden" id="form-title" name="title">
+    <input type="hidden" id="form-description" name="description">
+</form>
+
+<!-- CONFIRM DELETE OVERLAY -->
+<div id="confirm-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+    <div style="background: rgba(20,20,35,0.95); border: 1px solid rgba(255,71,87,0.4); border-radius: 24px; padding: 40px 50px; text-align: center; max-width: 420px; width: 90%; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
+        <div style="font-size: 48px; margin-bottom: 16px;">🗑️</div>
+        <h3 style="color: white; font-size: 22px; font-weight: 800; margin: 0 0 10px;">Delete Album?</h3>
+        <p style="color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 30px; line-height: 1.6;">
+            This will permanently delete <strong style="color: white;">{{ selected_album.title }}</strong> and all its photos. This cannot be undone.
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button onclick="document.getElementById('confirm-overlay').style.display='none'"
+                style="background: rgba(255,255,255,0.08); color: white; padding: 12px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s;">
+                CANCEL
+            </button>
+            <button onclick="document.getElementById('delete-album-form').submit()"
+                style="background: #ff4757; color: white; padding: 12px 28px; border-radius: 10px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(255,71,87,0.3);">
+                YES, DELETE
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
-function toggleSelect(element, id) {
-    const checkbox = document.getElementById('check-' + id);
-    const img = element.querySelector('.album-img');
-    const indicator = element.querySelector('.select-indicator');
-    const deleteBtn = document.getElementById('delete-btn');
+    let isEditMode = false;
 
-    // Toggle the checkbox
-    checkbox.checked = !checkbox.checked;
-
-    // Toggle visual selection styles
-    if (checkbox.checked) {
-        img.classList.add('selected-img');
-        indicator.style.display = 'flex';
-    } else {
-        img.classList.remove('selected-img');
-        indicator.style.display = 'none';
+    // ── EDIT MODE ──────────────────────────────────────────────────
+    function enterEditMode() {
+        isEditMode = true;
+        document.getElementById('view-mode-title').style.display = 'none';
+        document.getElementById('edit-mode-title').style.display = 'flex';
+        document.getElementById('view-actions').style.display = 'none';
+        document.getElementById('edit-actions').style.display = 'flex';
+        document.getElementById('edit-hint').style.display = 'block';
+        // Show select toggles
+        document.querySelectorAll('.select-toggle').forEach(el => el.style.opacity = '1');
     }
 
-    // Check how many are selected
-    const checkedCount = document.querySelectorAll('input[name="photo_ids"]:checked').length;
-    
-    if (checkedCount > 0) {
-        // ACTIVATE BUTTON: Use lowercase 'false'
-        deleteBtn.disabled = false; 
-        deleteBtn.style.background = '#ff4757'; 
-        deleteBtn.style.color = 'white'; 
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.opacity = '1';
-    } else {
-        // DEACTIVATE BUTTON: Use lowercase 'true'
-        deleteBtn.disabled = true;
-        deleteBtn.style.background = 'rgba(255, 255, 255, 0.1)'; 
-        deleteBtn.style.color = 'rgba(255,255,255,0.4)'; 
-        deleteBtn.style.cursor = 'not-allowed';
+    function exitEditMode() {
+        isEditMode = false;
+        document.getElementById('view-mode-title').style.display = 'block';
+        document.getElementById('edit-mode-title').style.display = 'none';
+        document.getElementById('view-actions').style.display = 'flex';
+        document.getElementById('edit-actions').style.display = 'none';
+        document.getElementById('edit-hint').style.display = 'none';
+        // Deselect all photos
+        document.querySelectorAll('input[name="photo_ids"]').forEach(cb => {
+            cb.checked = false;
+        });
+        document.querySelectorAll('.photo-item').forEach(item => {
+            item.querySelector('.album-img').classList.remove('selected-img');
+            item.querySelector('.select-indicator').style.display = 'none';
+            const toggle = item.querySelector('.select-toggle');
+            toggle.style.background = 'rgba(0,0,0,0.5)';
+            toggle.style.borderColor = 'rgba(255,255,255,0.5)';
+        });
+        updateDeleteBtn();
+        // Hide select toggles again
+        document.querySelectorAll('.select-toggle').forEach(el => el.style.opacity = '0');
     }
-}
+
+    function saveEdits() {
+        const newTitle = document.getElementById('edit-title-input').value.trim();
+        if (!newTitle) {
+            document.getElementById('edit-title-input').style.borderColor = '#ff4757';
+            return;
+        }
+        document.getElementById('form-title').value = newTitle;
+        document.getElementById('form-description').value = document.getElementById('edit-desc-input').value.trim();
+        document.getElementById('edit-album-form').submit();
+    }
+
+    function confirmDeleteAlbum() {
+        document.getElementById('confirm-overlay').style.display = 'flex';
+    }
+
+    // ── LIGHTBOX ──────────────────────────────────────────────────
+    function openLightbox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+
+    // In view mode: click opens lightbox. In edit mode: click toggles select.
+    function handleImgClick(e, src, item, id) {
+        if (isEditMode) {
+            toggleSelect(item, id);
+        } else {
+            openLightbox(src);
+        }
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+            document.getElementById('confirm-overlay').style.display = 'none';
+        }
+    });
+
+    // ── SELECT FOR DELETION ───────────────────────────────────────
+    function toggleSelect(element, id) {
+        if (!isEditMode) return;
+        const checkbox = document.getElementById('check-' + id);
+        const img = element.querySelector('.album-img');
+        const indicator = element.querySelector('.select-indicator');
+        const toggle = element.querySelector('.select-toggle');
+
+        checkbox.checked = !checkbox.checked;
+
+        if (checkbox.checked) {
+            img.classList.add('selected-img');
+            indicator.style.display = 'flex';
+            toggle.style.background = '#ff4757';
+            toggle.style.borderColor = '#ff4757';
+        } else {
+            img.classList.remove('selected-img');
+            indicator.style.display = 'none';
+            toggle.style.background = 'rgba(0,0,0,0.5)';
+            toggle.style.borderColor = 'rgba(255,255,255,0.5)';
+        }
+        updateDeleteBtn();
+    }
+
+    function updateDeleteBtn() {
+        const count = document.querySelectorAll('input[name="photo_ids"]:checked').length;
+        const btn = document.getElementById('delete-btn');
+        if (count > 0) {
+            btn.disabled = false;
+            btn.style.background = '#ff4757';
+            btn.style.color = 'white';
+            btn.style.cursor = 'pointer';
+            btn.textContent = `DELETE SELECTED (${count})`;
+        } else {
+            btn.disabled = true;
+            btn.style.background = 'rgba(255, 255, 255, 0.1)';
+            btn.style.color = 'rgba(255,255,255,0.4)';
+            btn.style.cursor = 'not-allowed';
+            btn.textContent = 'DELETE SELECTED';
+        }
+    }
+
+    // ── ADD PHOTO ──────────────────────────────────────────────────
+    document.getElementById('add-photo-card').addEventListener('click', function() {
+        document.getElementById('add-file-picker').click();
+    });
+
+    document.getElementById('add-file-picker').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            document.getElementById('add-photo-form').submit();
+        }
+    });
+
+    // Hide select toggles on load (only visible in edit mode)
+    document.querySelectorAll('.select-toggle').forEach(el => el.style.opacity = '0');
 </script>
 {% endblock %}
 
 {% block styles %}
 <style>
-    /* Styling for the selection overlay from image_a1d5be.jpg */
     .selected-img {
         border-color: #ff4757 !important;
         opacity: 0.7;
@@ -130,9 +315,25 @@ function toggleSelect(element, id) {
         font-weight: bold;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         z-index: 5;
+        pointer-events: none;
     }
 
-    /* Grid Hover Effects */
+    .select-toggle {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.5);
+        border: 2px solid rgba(255,255,255,0.5);
+        cursor: pointer;
+        z-index: 6;
+        transition: opacity 0.2s, background 0.2s;
+    }
+
+    .select-toggle:hover { border-color: #ff4757; }
+
     .photo-item:hover { transform: scale(1.03); }
 
     .add-photo-btn:hover {
@@ -140,24 +341,19 @@ function toggleSelect(element, id) {
         border-color: #7289da;
         color: white !important;
     }
-    
-    /* Navigation Hover Effects */
-    .back-link:hover, #delete-btn:not([disabled]):hover {
+
+    .back-link:hover {
         opacity: 0.6;
-        transform: translateY(-2px); 
+        transform: translateX(-5px);
         transition: 0.2s;
     }
-    
+
     #delete-btn[disabled] {
         opacity: 1 !important;
         transform: none !important;
     }
 
-    /* Sidebar active state styling */
-    .active-pill {
-        background: #7289da !important;
-        color: white !important;
-        font-weight: 700;
-    }
+    #edit-title-input:focus { border-color: rgba(88,101,242,0.7) !important; }
+    #edit-desc-input:focus { border-color: rgba(88,101,242,0.4) !important; }
 </style>
 {% endblock %}
