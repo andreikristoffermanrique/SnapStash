@@ -15,14 +15,22 @@
             <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 4px; z-index: 10;">
                 &lt; Back
             </a>
+<<<<<<< HEAD
             <h1 class="display-title" style="font-size: 60px; font-weight: 800; margin: 0; color: white; text-transform: uppercase;">MY ALBUMS</h1>
+=======
+            <h1 class="display-title" style="font-size: 60px; font-weight: 800; margin: 0; color: white; text-transform: uppercase;">YOUR COLLECTIONS</h1>
+>>>>>>> 5349d3b4f544e852a92f087d0bcb7c236316b7cf
         </div>
 
         <div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 50px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%;">
             <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                 {% for album in albums %}
                 <a href="{{ url_for('my_album', album_id=album.id) }}" class="btn-primary-custom" style="width: 450px; background: #5865f2; color: white; padding: 18px; border-radius: 50px; text-decoration: none; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;">
+<<<<<<< HEAD
                      {{ album.title }}
+=======
+                    View Album: {{ album.title }}
+>>>>>>> 5349d3b4f544e852a92f087d0bcb7c236316b7cf
                 </a>
                 {% endfor %}
                 

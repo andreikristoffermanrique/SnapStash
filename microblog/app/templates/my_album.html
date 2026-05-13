@@ -9,8 +9,12 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Increased max-width to 1400px for a wider layout -->
     <div class="dashboard-container text-center" style="max-width: 1400px; width: 95%;">
+=======
+    <div class="dashboard-container text-center" style="max-width: 1200px; width: 95%;">
+>>>>>>> 5349d3b4f544e852a92f087d0bcb7c236316b7cf
         
         <div class="header-main-row" style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
             
@@ -28,6 +32,7 @@
     DELETE SELECTED PICTURES
 </button>
         </div>
+<<<<<<< HEAD
         
         <!-- Removed the sidebar and set the photo area to take up 100% width -->
         <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 40px; width: 100%;">
@@ -37,6 +42,23 @@
                 <form id="delete-form" action="{{ url_for('delete_photos', album_id=selected_album.id) }}" method="POST">
                     <!-- Adjusted grid minmax to 200px to balance the wider screen -->
                     <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+=======
+        <div class="album-content-layout" style="display: flex; gap: 50px; margin-top: 40px;">
+            
+            <div class="album-sidebar" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                {% for album in albums %}
+                    <a href="{{ url_for('my_album', album_id=album.id) }}" 
+                       class="btn-album-sidebar {% if album.id == selected_album.id %}active-pill{% endif %}">
+                        {{ album.title }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div class="photo-display-area" style="flex: 2; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 25px; min-height: 500px; border: 1px solid rgba(255,255,255,0.05);">
+                
+                <form id="delete-form" action="{{ url_for('delete_photos', album_id=selected_album.id) }}" method="POST">
+                    <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+>>>>>>> 5349d3b4f544e852a92f087d0bcb7c236316b7cf
                         
                         {% for photo in selected_album.photos %}
                             <div class="photo-item" style="position: relative; cursor: pointer; transition: transform 0.3s ease;" onclick="toggleSelect(this, '{{ photo.id }}')">
@@ -60,8 +82,12 @@
                         {% endif %}
 
                     </div>
+<<<<<<< HEAD
                 </form> 
             </div>
+=======
+                </form> </div>
+>>>>>>> 5349d3b4f544e852a92f087d0bcb7c236316b7cf
         </div>
     </div>
 </div>
