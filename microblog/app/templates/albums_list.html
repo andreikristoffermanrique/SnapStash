@@ -3,13 +3,9 @@
 {% block content %}
 <div class="login-page-container" style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
     
-    <!-- THE ULTIMATE HERO LOGO SECTION -->
     <div class="central-header" style="margin-bottom: 60px; text-align: center; width: 100%;">
         <div class="logo-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 40px;">
-            <!-- Icon scaled up to match massive text -->
             <img src="{{ url_for('static', filename='assets/SnapStash_Logo_200.png') }}" class="icon" style="height: 140px; width: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));">
-            
-            <!-- MAXIMIZED SNAPSTASH WORD -->
             <span class="logo-text" style="font-size: 120px !important; font-weight: 950; color: white; letter-spacing: -6px; text-shadow: 0 15px 40px rgba(0,0,0,0.6); line-height: 1;">
                 SnapStash
             </span>
@@ -18,27 +14,48 @@
 
     <div class="dashboard-container text-center" style="max-width: 1100px; width: 95%; display: flex; flex-direction: column; align-items: center;">
         
-        <!-- SUB-HEADER SECTION -->
         <div class="header-main-row" style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; width: 100%;">
-            <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; z-index: 10; opacity: 0.6;">
+            <a href="{{ url_for('index') }}" class="back-link" style="position: absolute; left: 0; color: white; text-decoration: none; font-size: 20px; font-weight: 700; opacity: 0.6;">
                 &lt; Back
             </a>
-            <h1 class="display-title" style="font-size: 50px; font-weight: 800; margin: 0; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px;">MY ALBUMS</h1>
+            <h1 class="display-title" style="font-size: 50px; font-weight: 800; margin: 0; color: rgba(255,255,255,0.9); text-transform: uppercase;">MY ALBUMS</h1>
         </div>
 
-        <!-- ALBUM SELECTION CARD -->
         <div class="glass-card" style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); padding: 50px; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; max-width: 800px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            
             <div style="display: flex; flex-direction: column; gap: 18px; align-items: center;">
                 {% for album in albums %}
-                <a href="{{ url_for('my_album', album_id=album.id) }}" class="btn-primary-custom" style="width: 100%; max-width: 480px; background: #5865f2; color: white; padding: 20px; border-radius: 60px; text-decoration: none; font-weight: 900; font-size: 17px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center;">
+                <a href="{{ url_for('my_album', album_id=album.id) }}" class="btn-primary-custom" style="width: 100%; max-width: 480px; background: #5865f2; color: white; padding: 20px; border-radius: 60px; text-decoration: none; font-weight: 900; font-size: 17px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
                      {{ album.title }}
                 </a>
                 {% endfor %}
                 
                 {% if not albums %}
-                <p style="color: rgba(255,255,255,0.4); font-size: 18px; font-weight: 500;">No albums found. Go back to create one!</p>
+                <p style="color: rgba(255,255,255,0.4); font-size: 18px;">No albums found.</p>
                 {% endif %}
             </div>
+
+            {% if pagination.pages > 1 %}
+            <div class="pagination-container" style="margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; gap: 30px;">
+                
+                {% if pagination.has_prev %}
+                <a href="{{ url_for('albums_list', page=pagination.prev_num) }}" class="page-nav-link">&larr; NEWER</a>
+                {% else %}
+                <span class="page-nav-link disabled">&larr; NEWER</span>
+                {% endif %}
+
+                <div class="page-indicator" style="color: rgba(255,255,255,0.3); font-weight: 800; font-size: 12px; letter-spacing: 2px;">
+                    PAGE {{ pagination.page }} OF {{ pagination.pages }}
+                </div>
+
+                {% if pagination.has_next %}
+                <a href="{{ url_for('albums_list', page=pagination.next_num) }}" class="page-nav-link">OLDER &rarr;</a>
+                {% else %}
+                <span class="page-nav-link disabled">OLDER &rarr;</span>
+                {% endif %}
+                
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -46,32 +63,26 @@
 
 {% block styles %}
 <style>
-    /* Prevent text wrapping on the massive logo */
-    .logo-text {
-        white-space: nowrap;
-        font-family: 'Inter', sans-serif; /* Ensuring a bold, modern font */
-    }
-
-    .btn-primary-custom:hover {
-        background: #4752c4 !important;
-        transform: scale(1.04) translateY(-3px);
-        box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4) !important;
+    .logo-text { white-space: nowrap; font-family: 'Inter', sans-serif; }
+    .btn-primary-custom:hover { background: #4752c4 !important; transform: scale(1.04) translateY(-3px); box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4) !important; }
+    .back-link:hover { opacity: 1 !important; transform: translateX(-5px); transition: 0.3s; }
+    
+    .page-nav-link { 
+        color: white; 
+        text-decoration: none; 
+        font-weight: 800; 
+        font-size: 13px; 
+        padding: 10px 20px; 
+        border-radius: 12px; 
+        background: rgba(255,255,255,0.05); 
+        border: 1px solid rgba(255,255,255,0.1); 
+        transition: 0.3s; 
     }
     
-    .back-link:hover {
-        opacity: 1 !important;
-        transform: translateX(-5px); 
-        transition: 0.3s;
-    }
+    .page-nav-link:hover:not(.disabled) { background: rgba(88, 101, 242, 0.2); border-color: #5865f2; color: #7289da; }
+    .page-nav-link.disabled { opacity: 0.15; cursor: not-allowed; }
 
-    /* Cinematic entrance animation */
-    .logo-wrapper {
-        animation: logoEntrance 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    @keyframes logoEntrance {
-        from { opacity: 0; transform: scale(0.9); filter: blur(10px); }
-        to { opacity: 1; transform: scale(1); filter: blur(0); }
-    }
+    .logo-wrapper { animation: logoEntrance 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @keyframes logoEntrance { from { opacity: 0; transform: scale(0.9); filter: blur(10px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
 </style>
 {% endblock %}
