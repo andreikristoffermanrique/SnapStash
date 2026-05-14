@@ -187,7 +187,13 @@
         --text-muted: rgba(255, 255, 255, 0.5);
     }
 
-    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg-dark); }
+    html, body { 
+        height: 100%; 
+        margin: 0; 
+        overflow: hidden; 
+        background: linear-gradient(rgba(10, 20, 40, 0.75), rgba(10, 20, 40, 0.85)), 
+                    url("{{ url_for('static', filename='assets/camera_bg_1920v2.jpg') }}") no-repeat center center/cover; 
+    }
     
     .page-wrapper {
         height: 100vh;
@@ -208,9 +214,21 @@
     }
 
     .nav-header { margin-bottom: 20px; }
-    .logo-container { display: flex; align-items: center; gap: 15px; }
-    .logo-icon { height: 50px; }
-    .logo-text { font-size: 55px; font-weight: 900; letter-spacing: -2px; color: white; }
+    .logo-container { display: flex; align-items: center; gap: 25px; }
+    
+    /* UPDATED LOGO CSS */
+    .logo-icon { 
+        height: 100px; 
+        width: auto; 
+        filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4)); 
+    }
+    .logo-text { 
+        font-size: 90px; 
+        font-weight: 950; 
+        letter-spacing: -4px; 
+        color: white; 
+        text-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+    }
 
     .content-card {
         width: 100%;
