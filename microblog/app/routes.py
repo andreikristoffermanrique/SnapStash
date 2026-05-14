@@ -20,8 +20,15 @@ def index():
 @app.route('/albums_list')
 @login_required
 def albums_list():
-    albums = current_user.albums.all()
-    return render_template('albums_list.html', albums=albums)
+    page = request.args.get('page', 1, type=int)
+    
+    pagination = current_user.albums.order_by(Album.id.desc()).paginate(
+        page=page, per_page=5, error_out=False
+    )
+
+    return render_template('albums_list.html', 
+                           albums=pagination.items, 
+                           pagination=pagination)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
