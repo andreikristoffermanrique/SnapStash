@@ -108,6 +108,7 @@ def delete_photos(album_id):
     album = Album.query.get_or_404(album_id)
     
     if album.owner != current_user:
+        flash('Permission denied.')
         return redirect(url_for('index'))
 
     photo_ids = request.form.getlist('photo_ids')
@@ -120,6 +121,7 @@ def delete_photos(album_id):
             db.session.delete(photo)
             
     db.session.commit()
+    flash(f'Selected photos deleted.')
     return redirect(url_for('my_album', album_id=album.id))
 
 @app.route('/album/<int:album_id>/edit', methods=['POST'])
@@ -154,17 +156,18 @@ def delete_album(album_id):
         flash('You do not have permission to delete this album.')
         return redirect(url_for('index'))
 
-    # Delete all photo files from disk
+    # Delete all associated photo files from the filesystem
     for photo in album.photos.all():
         file_path = os.path.join(app.root_path, 'static/uploads', photo.filename)
         if os.path.exists(file_path):
             os.remove(file_path)
         db.session.delete(photo)
 
+    album_title = album.title
     db.session.delete(album)
     db.session.commit()
 
-    flash(f'Album "{album.title}" has been deleted.')
+    flash(f'Album "{album_title}" and all its photos have been deleted.')
     return redirect(url_for('albums_list'))
 
 @app.route('/album/<int:album_id>/present')
@@ -172,7 +175,6 @@ def delete_album(album_id):
 def present_album(album_id):
     album = Album.query.get_or_404(album_id)
     
-    # Ensure only the owner can present the album
     if album.owner != current_user:
         flash('You do not have permission to present this album.')
         return redirect(url_for('index'))

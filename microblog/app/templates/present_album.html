@@ -12,17 +12,18 @@
             height: 100%;
             background-color: #000;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             color: white;
         }
 
         .slideshow-container {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #000;
         }
 
         .slide {
@@ -31,61 +32,68 @@
             height: 100%;
             align-items: center;
             justify-content: center;
-            animation: fade 0.5s ease-in-out;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* --- MAXIMIZED IMAGE LOGIC --- */
         .slide img {
-            max-width: 95vw;
-            max-height: 95vh;
+            /* Fills screen while keeping arrows visible */
+            max-width: 92vw; 
+            max-height: 90vh;
             object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 4px; /* Sharper, professional look */
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
-        @keyframes fade {
-            from { opacity: 0.4; transform: scale(0.98); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.97); }
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Navigation Arrows */
+        /* Navigation Arrows (Larger for image_dbd340.png style) */
         .prev, .next {
             cursor: pointer;
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: auto;
-            padding: 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: bold;
-            font-size: 40px;
-            transition: 0.3s ease;
+            top: 0;
+            height: 100%;
+            width: 10%; /* Wide hit area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 80px;
+            transition: all 0.3s ease;
             user-select: none;
-            border-radius: 5px;
             text-decoration: none;
+            z-index: 5;
         }
 
-        .next { right: 20px; }
-        .prev { left: 20px; }
+        .next { right: 0; }
+        .prev { left: 0; }
 
         .prev:hover, .next:hover {
             color: white;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to right, rgba(255,255,255,0.05), transparent);
+        }
+        .next:hover {
+            background: linear-gradient(to left, rgba(255,255,255,0.05), transparent);
         }
 
-        /* Top Bar */
+        /* Top Bar - Premium Minimal Look */
         .top-bar {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 20px;
+            padding: 30px 40px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             box-sizing: border-box;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
             z-index: 10;
-            opacity: 0;
-            transition: opacity 0.3s;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.4s ease;
         }
 
         .slideshow-container:hover .top-bar {
@@ -95,38 +103,23 @@
         .back-btn {
             color: white;
             text-decoration: none;
-            font-size: 16px;
-            font-weight: 600;
-            background: rgba(255,255,255,0.1);
-            padding: 8px 16px;
-            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.15);
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
             transition: 0.2s;
         }
 
-        .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .back-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
 
-        .album-info {
-            text-align: right;
-        }
+        .album-info { text-align: right; }
+        .album-title { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 1px; }
+        .counter { font-size: 16px; color: rgba(255,255,255,0.5); font-weight: 600; margin-top: 4px; }
 
-        .album-title {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .counter {
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            margin-top: 5px;
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-        }
+        .empty-state { text-align: center; }
     </style>
 </head>
 <body>
@@ -134,7 +127,7 @@
     <div class="slideshow-container">
         
         <div class="top-bar">
-            <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Exit</a>
+            <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Exit Presentation</a>
             <div class="album-info">
                 <h2 class="album-title">{{ album.title | upper }}</h2>
                 <div class="counter"><span id="current-count">1</span> / {{ album.photos.count() }}</div>
@@ -144,7 +137,7 @@
         {% if album.photos.count() > 0 %}
             {% for photo in album.photos %}
             <div class="slide">
-                <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="Album Photo">
+                <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="Presentation Image">
             </div>
             {% endfor %}
 
@@ -152,9 +145,11 @@
             <a class="next" onclick="changeSlide(1)">&#10095;</a>
         {% else %}
             <div class="empty-state">
-                <h1 style="font-size: 40px; margin-bottom: 10px;">📸</h1>
-                <h2>No photos to present</h2>
-                <p>Exit presentation mode and add some photos to this album.</p>
+                <h1 style="font-size: 60px; margin-bottom: 20px;">📸</h1>
+                <h2>This album is empty</h2>
+                <p style="color: #666;">Add some photos to start your presentation.</p>
+                <br>
+                <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Go Back</a>
             </div>
         {% endif %}
 
