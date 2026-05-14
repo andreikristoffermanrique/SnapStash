@@ -134,7 +134,7 @@
     <div class="slideshow-container">
         
         <div class="top-bar">
-            <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Exit Presentation</a>
+            <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Exit</a>
             <div class="album-info">
                 <h2 class="album-title">{{ album.title | upper }}</h2>
                 <div class="counter"><span id="current-count">1</span> / {{ album.photos.count() }}</div>
