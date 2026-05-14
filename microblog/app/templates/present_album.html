@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presenting: {{ album.title }} - SnapStash</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            animation: fade 0.5s ease-in-out;
+        }
+
+        .slide img {
+            max-width: 95vw;
+            max-height: 95vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fade {
+            from { opacity: 0.4; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Navigation Arrows */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+            font-size: 40px;
+            transition: 0.3s ease;
+            user-select: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .next { right: 20px; }
+        .prev { left: 20px; }
+
+        .prev:hover, .next:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .slideshow-container:hover .top-bar {
+            opacity: 1;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .album-info {
+            text-align: right;
+        }
+
+        .album-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .counter {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slideshow-container">
+        
+        <div class="top-bar">
+            <a href="{{ url_for('my_album', album_id=album.id) }}" class="back-btn">Exit Presentation</a>
+            <div class="album-info">
+                <h2 class="album-title">{{ album.title | upper }}</h2>
+                <div class="counter"><span id="current-count">1</span> / {{ album.photos.count() }}</div>
+            </div>
+        </div>
+
+        {% if album.photos.count() > 0 %}
+            {% for photo in album.photos %}
+            <div class="slide">
+                <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="Album Photo">
+            </div>
+            {% endfor %}
+
+            <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+            <a class="next" onclick="changeSlide(1)">&#10095;</a>
+        {% else %}
+            <div class="empty-state">
+                <h1 style="font-size: 40px; margin-bottom: 10px;">📸</h1>
+                <h2>No photos to present</h2>
+                <p>Exit presentation mode and add some photos to this album.</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        let slideIndex = 1;
+        const slides = document.getElementsByClassName("slide");
+        const countDisplay = document.getElementById("current-count");
+
+        if (slides.length > 0) {
+            showSlide(slideIndex);
+        }
+
+        function changeSlide(n) {
+            showSlide(slideIndex += n);
+        }
+
+        function showSlide(n) {
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            
+            slides[slideIndex - 1].style.display = "flex";
+            countDisplay.innerText = slideIndex;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'Escape') {
+                window.location.href = "{{ url_for('my_album', album_id=album.id) }}";
+            }
+        });
+    </script>
+</body>
+</html>

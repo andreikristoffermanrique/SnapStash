@@ -166,3 +166,15 @@ def delete_album(album_id):
 
     flash(f'Album "{album.title}" has been deleted.')
     return redirect(url_for('albums_list'))
+
+@app.route('/album/<int:album_id>/present')
+@login_required
+def present_album(album_id):
+    album = Album.query.get_or_404(album_id)
+    
+    # Ensure only the owner can present the album
+    if album.owner != current_user:
+        flash('You do not have permission to present this album.')
+        return redirect(url_for('index'))
+        
+    return render_template('present_album.html', album=album)

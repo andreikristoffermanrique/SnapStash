@@ -42,11 +42,16 @@
             </div>
 
             <!-- Right-side action buttons -->
-            <div id="view-actions" style="position: absolute; right: 0; display: flex; gap: 10px; align-items: center; z-index: 10;">
+            <div id="view-actions" style="position: absolute; right: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; z-index: 10;">
                 <!-- EDIT button -->
                 <button id="edit-btn" onclick="enterEditMode()"
-                    style="background: rgba(88, 101, 242, 0.2); color: #7289da; padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(88,101,242,0.4); font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">
+                    style="background: rgba(88, 101, 242, 0.2); color: #7289da; padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(88,101,242,0.4); font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 120px;">
                     EDIT
+                </button>
+                <!-- PRESENT button -->
+                <button id="present-btn" onclick="startPresentation()"
+                    style="background: rgba(46, 204, 113, 0.2); color: #2ecc71; padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(46,204,113,0.4); font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 120px;">
+                    PRESENT
                 </button>
             </div>
 
@@ -153,6 +158,11 @@
 
 <script>
     let isEditMode = false;
+
+    // ── PRESENTATION MODE ──────────────────────────────────────────
+    function startPresentation() {
+        window.location.href = "{{ url_for('present_album', album_id=selected_album.id) }}";
+    }
 
     // ── EDIT MODE ──────────────────────────────────────────────────
     function enterEditMode() {
@@ -355,5 +365,10 @@
 
     #edit-title-input:focus { border-color: rgba(88,101,242,0.7) !important; }
     #edit-desc-input:focus { border-color: rgba(88,101,242,0.4) !important; }
+
+    /* Optional hover effects for the new Present button */
+    #present-btn:hover {
+        background: rgba(46, 204, 113, 0.3) !important;
+    }
 </style>
 {% endblock %}
