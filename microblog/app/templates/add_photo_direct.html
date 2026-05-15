@@ -20,14 +20,10 @@
 </div>
 
 <script>
-// This function automatically uploads your photos once you click 'Open'
 function submitForm() {
     document.getElementById('upload-form').submit();
 }
 
-// THIS IS THE MOST IMPORTANT PART:
-// When the page loads, automatically click the hidden file input
-// This triggers your file selector window immediately.
 window.onload = function() {
     document.getElementById('file-picker').click();
 }
