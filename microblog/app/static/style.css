@@ -41,7 +41,7 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
 
 .flash-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
 .alert-custom { 
-    background: rgba(77, 163, 255, 0.2); /* Changed from red-ish to blue-ish to match your theme */
+    background: rgba(77, 163, 255, 0.2); 
     border: 1px solid #4da3ff; 
     color: #fff; 
     padding: 12px 24px; 
@@ -130,12 +130,12 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
 .signup-text a { color: #4da3ff; text-decoration: none; font-weight: 600; }
 
 .btn-album-action {
-    background: #4740d1; /* The Figma Blue/Purple */
+    background: #4740d1;
     color: white !important;
     width: 100%;
-    max-width: 450px; /* Adjust based on your card width */
+    max-width: 450px; 
     padding: 18px 0;
-    border-radius: 50px; /* Makes it a pill shape */
+    border-radius: 50px; 
     text-decoration: none !important;
     font-weight: 700;
     font-size: 18px;
@@ -159,9 +159,8 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
     align-items: center;
 }
 
-/* Sidebar Pill Buttons */
 .btn-album-sidebar {
-    background: #4740d1; /* Figma Blue/Purple */
+    background: #4740d1;
     color: white !important;
     padding: 15px 30px;
     border-radius: 50px;
@@ -179,7 +178,6 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
     transform: scale(1.05);
 }
 
-/* Style for the currently selected album button */
 .active-pill {
     background: #322ba3;
     border: 2px solid rgba(255,255,255,0.4);
