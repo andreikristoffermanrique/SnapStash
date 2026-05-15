@@ -21,19 +21,27 @@
             
             <h1 class="display-title" style="font-size: 50px; font-weight: 800; margin: 0; color: rgba(255,255,255,0.9); text-transform: uppercase;">MY ALBUMS</h1>
             
-            <form id="search-form" action="{{ url_for('albums_list') }}" method="GET" style="position: absolute; right: 0;" onsubmit="event.preventDefault();">
+            <div style="position: absolute; right: 0; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
                 <div class="search-wrapper" style="position: relative; display: flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-search" viewBox="0 0 16 16" style="position: absolute; left: 10px; pointer-events: none; stroke: white; stroke-width: 0.5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-search" viewBox="0 0 16 16" style="position: absolute; left: 10px; pointer-events: none; opacity: 0.7;">
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                     </svg>
-                    <input type="text" id="search-input" name="search" class="search-input" placeholder="Search Album" value="{{ request.args.get('search', '') }}" autocomplete="off"
-                           style="background: transparent; border: 2px solid white; color: white; padding: 6px 12px 6px 36px; border-radius: 4px; font-size: 14px; font-weight: 700; outline: none; width: 160px; font-family: 'Inter', sans-serif; transition: 0.3s;">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search Album" value="{{ request.args.get('search', '') }}" autocomplete="off"
+                           style="background: transparent; border: 2px solid rgba(255,255,255,0.4); color: white; padding: 6px 12px 6px 32px; border-radius: 4px; font-size: 13px; font-weight: 700; outline: none; width: 160px; transition: 0.3s;">
                 </div>
-            </form>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: rgba(255,255,255,0.4); font-size: 10px; font-weight: 800; letter-spacing: 1px;">SORT BY:</span>
+                    <select id="sort-select" class="sort-dropdown" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; min-width: 100px;">
+                        <option value="newest" style="background: #1a1d26;" {% if current_sort == 'newest' %}selected{% endif %}>NEWEST</option>
+                        <option value="oldest" style="background: #1a1d26;" {% if current_sort == 'oldest' %}selected{% endif %}>OLDEST</option>
+                        <option value="alpha" style="background: #1a1d26;" {% if current_sort == 'alpha' %}selected{% endif %}>A-Z</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div id="results-container" class="glass-card" style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); padding: 50px; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; max-width: 800px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
-            
             <div style="display: flex; flex-direction: column; gap: 18px; align-items: center;">
                 {% for album in albums %}
                 <a href="{{ url_for('my_album', album_id=album.id) }}" class="btn-primary-custom" style="width: 100%; max-width: 480px; background: #5865f2; color: white; padding: 20px; border-radius: 60px; text-decoration: none; font-weight: 900; font-size: 17px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
@@ -48,9 +56,8 @@
 
             {% if pagination.pages > 1 %}
             <div class="pagination-container" style="margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; gap: 30px;">
-                
                 {% if pagination.has_prev %}
-                <a href="{{ url_for('albums_list', page=pagination.prev_num, search=request.args.get('search', '')) }}" class="page-nav-link">&larr; PREVIOUS</a>
+                <a href="{{ url_for('albums_list', page=pagination.prev_num, search=request.args.get('search', ''), sort=current_sort) }}" class="page-nav-link">&larr; PREVIOUS</a>
                 {% else %}
                 <span class="page-nav-link disabled">&larr; PREVIOUS</span>
                 {% endif %}
@@ -60,11 +67,10 @@
                 </div>
 
                 {% if pagination.has_next %}
-                <a href="{{ url_for('albums_list', page=pagination.next_num, search=request.args.get('search', '')) }}" class="page-nav-link">NEXT &rarr;</a>
+                <a href="{{ url_for('albums_list', page=pagination.next_num, search=request.args.get('search', ''), sort=current_sort) }}" class="page-nav-link">NEXT &rarr;</a>
                 {% else %}
                 <span class="page-nav-link disabled">NEXT &rarr;</span>
                 {% endif %}
-                
             </div>
             {% endif %}
         </div>
@@ -76,68 +82,38 @@
 <style>
     .logo-text { white-space: nowrap; font-family: 'Inter', sans-serif; }
     .btn-primary-custom:hover { background: #4752c4 !important; transform: scale(1.04) translateY(-3px); box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4) !important; }
-    .back-link:hover { opacity: 1 !important; transform: translateX(-5px); transition: 0.3s; }
-    
-    .page-nav-link { 
-        color: white; 
-        text-decoration: none; 
-        font-weight: 800; 
-        font-size: 13px; 
-        padding: 10px 20px; 
-        border-radius: 12px; 
-        background: rgba(255,255,255,0.05); 
-        border: 1px solid rgba(255,255,255,0.1); 
-        transition: 0.3s; 
-    }
-    
+    .page-nav-link { color: white; text-decoration: none; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
     .page-nav-link:hover:not(.disabled) { background: rgba(88, 101, 242, 0.2); border-color: #5865f2; color: #7289da; }
     .page-nav-link.disabled { opacity: 0.15; cursor: not-allowed; }
-
-    .logo-wrapper { animation: logoEntrance 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-    @keyframes logoEntrance { from { opacity: 0; transform: scale(0.9); filter: blur(10px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
-
-    .search-input::placeholder { color: white; opacity: 0.8; }
-    .search-input:focus { border-color: #5865f2 !important; box-shadow: 0 0 10px rgba(88, 101, 242, 0.5); }
 </style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
         const resultsContainer = document.getElementById('results-container');
         let typingTimer;
-        
-        // 400ms delay so we aren't spamming the server on every keystroke
-        const doneTypingInterval = 400; 
+
+        const performSearch = () => {
+            const query = searchInput.value;
+            const sort = sortSelect.value;
+            const url = `{{ url_for('albums_list') }}?search=${encodeURIComponent(query)}&sort=${sort}`;
+
+            fetch(url)
+                .then(r => r.text())
+                .then(html => {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    resultsContainer.innerHTML = doc.getElementById('results-container').innerHTML;
+                    window.history.pushState({ path: url }, '', url);
+                });
+        };
 
         searchInput.addEventListener('input', () => {
             clearTimeout(typingTimer);
-            typingTimer = setTimeout(performSearch, doneTypingInterval);
+            typingTimer = setTimeout(performSearch, 400);
         });
 
-        function performSearch() {
-            const query = searchInput.value;
-            // Build the URL (drops the page parameter so searching always starts at page 1)
-            const url = `{{ url_for('albums_list') }}?search=${encodeURIComponent(query)}`;
-
-            // Fetch the updated page html quietly in the background
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    // Convert the HTML string into a temporary document
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    
-                    // Pull out just the new updated glass-card inner html
-                    const newContent = doc.getElementById('results-container').innerHTML;
-                    
-                    // Inject it into our live page
-                    resultsContainer.innerHTML = newContent;
-                    
-                    // Update the browser URL bar so pagination links and refreshing still works normally
-                    window.history.pushState({ path: url }, '', url);
-                })
-                .catch(err => console.error('Search fetch error:', err));
-        }
+        sortSelect.addEventListener('change', performSearch);
     });
 </script>
 {% endblock %}
