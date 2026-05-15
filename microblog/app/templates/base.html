@@ -14,7 +14,7 @@
         {% block styles %}{% endblock %}
     </head>
     <body>
-        <!-- 3. FLASH MESSAGES (Kept for your routes.py logic) -->
+        <!-- 3. FLASH MESSAGES  -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <div class="flash-wrapper" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
@@ -30,12 +30,11 @@
             {% block content %}{% endblock %}
         </main>
 
-        <!-- 5. SCRIPTS (Moved to bottom for better performance) -->
+        <!-- 5. SCRIPTS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         
         {% block scripts %}
         <script>
-            // This waits for the page to load, then finds your flash messages
             document.addEventListener('DOMContentLoaded', function() {
                 const messages = document.querySelectorAll('.alert-custom');
                 
