@@ -156,16 +156,10 @@
         return (
             <div className="page-wrapper">
                 {toast.visible && (
-                    <div style={{
-                        position: 'fixed', bottom: '30px', right: '30px', zIndex: 99999,
-                        background: 'rgba(30, 33, 48, 0.95)', border: '1px solid rgba(255,255,255,0.12)',
-                        color: 'white', padding: '14px 22px', borderRadius: '12px',
-                        backdropFilter: 'blur(12px)', boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
-                        fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '10px',
-                        animation: 'toastIn 0.3s cubic-bezier(0.23,1,0.32,1)'
-                    }}>
-                        <span style={{ color: '#5865f2', fontSize: '18px' }}>✓</span>
-                        {toast.message}
+                    <div className="flash-wrapper">
+                        <div className="alert-custom">
+                            {toast.message}
+                        </div>
                     </div>
                 )}
                 <div className="main-container">

@@ -40,9 +40,17 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-s
 }
 
 .flash-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
-.alert-custom { background: rgba(255, 107, 107, 0.2); 
-    border: 1px solid #ff6b6b; color: #ff6b6b; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(10px); margin-bottom: 10px; }
-
+.alert-custom { 
+    background: rgba(77, 163, 255, 0.2); /* Changed from red-ish to blue-ish to match your theme */
+    border: 1px solid #4da3ff; 
+    color: #fff; 
+    padding: 12px 24px; 
+    border-radius: 10px; 
+    backdrop-filter: blur(10px); 
+    margin-bottom: 10px;
+    font-weight: 600;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
 .error-msg { color: #ff6b6b; font-size: 11px; margin-top: 5px; display: block; }
 
 .login-card {
