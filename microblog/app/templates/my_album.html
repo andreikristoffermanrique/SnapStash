@@ -86,12 +86,17 @@
             if (modalConfig.type === 'album') {
                 document.getElementById('delete-album-form').submit();
             } else if (modalConfig.type === 'photos') {
+                // 1. Close modal immediately so the UI is responsive
+                closeModal(); 
+
                 const formAction = document.getElementById('delete-photos-form').action;
                 const formData = new FormData();
-                
-                selectedIds.forEach(id => {
-                    formData.append('photo_ids', id);
-                });
+                selectedIds.forEach(id => formData.append('photo_ids', id));
+
+                // 2. Optimistically remove photos from the screen immediately
+                const idsToRemove = [...selectedIds];
+                setPhotos(prev => prev.filter(p => !idsToRemove.includes(p.id)));
+                setSelectedIds([]);
 
                 try {
                     const response = await fetch(formAction, {
@@ -100,18 +105,12 @@
                     });
 
                     if (response.ok) {
-                        const deletedCount = selectedIds.length;
-                        setPhotos(prevPhotos => prevPhotos.filter(photo => !selectedIds.includes(photo.id)));
-                        setSelectedIds([]);
-                        showToast(deletedCount === 1 ? 'Photo deleted.' : `${deletedCount} photos deleted.`);
-                    } else {
-                        console.error("Failed to delete photos from the server.");
+                        showToast(idsToRemove.length === 1 ? 'Photo deleted.' : `${idsToRemove.length} photos deleted.`);
                     }
                 } catch (error) {
-                    console.error("Error connecting to server:", error);
+                    console.error("Delete failed:", error);
+                    // Optionally: add code here to put the photos back if the server failed
                 }
-                
-                closeModal();
             }
         };
 
