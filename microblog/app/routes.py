@@ -16,13 +16,21 @@ def home():
 def index():
     return render_template('index.html', user=current_user)
 
-# --- NEW DEDICATED ALBUMS PAGE ---
+# --- NEW DEDICATED ALBUMS PAGE WITH SEARCH ---
 @app.route('/albums_list')
 @login_required
 def albums_list():
     page = request.args.get('page', 1, type=int)
+    search_query = request.args.get('search', '').strip()
     
-    pagination = current_user.albums.order_by(Album.id.desc()).paginate(
+    # Start with the base query for the current user's albums
+    query = current_user.albums
+    
+    # If a search term exists, filter the albums by title (case-insensitive)
+    if search_query:
+        query = query.filter(Album.title.ilike(f'%{search_query}%'))
+        
+    pagination = query.order_by(Album.id.desc()).paginate(
         page=page, per_page=5, error_out=False
     )
 
