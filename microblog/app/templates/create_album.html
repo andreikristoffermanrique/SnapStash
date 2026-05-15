@@ -14,8 +14,7 @@
                     <label style="color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600;">ALBUM TITLE</label>
                     {{ form.title(class="form-control create-input", placeholder="Enter Album Title", style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; padding: 12px; width: 100%; margin-top: 5px;") }}
                 </div>
-                
-                <!-- Added Description Field -->
+
                 <div style="margin-top: 20px; text-align: left;">
                     <label style="color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600;">DESCRIPTION</label>
                     {{ form.description(class="form-control create-input", placeholder="Enter Album Description", style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; padding: 12px; width: 100%; margin-top: 5px;", rows="3") }}
@@ -42,13 +41,12 @@
 
 {% block styles %}
 <style>
-    /* Fix placeholder visibility */
+
     .create-input::placeholder {
         color: rgba(255, 255, 255, 0.35) !important;
         opacity: 1;
     }
 
-    /* Styling the actual button part of the file input to match your aesthetic */
     input[type="file"]::file-selector-button {
         background: #36393f;
         color: white;
