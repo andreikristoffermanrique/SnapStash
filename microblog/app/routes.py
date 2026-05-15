@@ -21,22 +21,27 @@ def index():
 @login_required
 def albums_list():
     page = request.args.get('page', 1, type=int)
-    search_query = request.args.get('search', '').strip()
-    
-    # Start with the base query for the current user's albums
+    search_query = request.args.get('search', '')
+    sort_by = request.args.get('sort', 'newest') 
+
     query = current_user.albums
-    
-    # If a search term exists, filter the albums by title (case-insensitive)
+
     if search_query:
         query = query.filter(Album.title.ilike(f'%{search_query}%'))
-        
-    pagination = query.order_by(Album.id.desc()).paginate(
-        page=page, per_page=5, error_out=False
-    )
+
+    if sort_by == 'oldest':
+        query = query.order_by(Album.id.asc())    
+    elif sort_by == 'alpha':
+        query = query.order_by(Album.title.asc()) 
+    else:
+        query = query.order_by(Album.id.desc())   
+
+    pagination = query.paginate(page=page, per_page=5, error_out=False)
 
     return render_template('albums_list.html', 
                            albums=pagination.items, 
-                           pagination=pagination)
+                           pagination=pagination,
+                           current_sort=sort_by)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -172,7 +177,6 @@ def delete_album(album_id):
         flash('You do not have permission to delete this album.')
         return redirect(url_for('index'))
 
-    # Delete all associated photo files from the filesystem
     for photo in album.photos.all():
         file_path = os.path.join(app.root_path, 'static/uploads', photo.filename)
         if os.path.exists(file_path):
