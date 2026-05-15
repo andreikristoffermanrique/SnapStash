@@ -120,24 +120,25 @@ def add_photo(album_id):
 @app.route('/album/<int:album_id>/delete_photos', methods=['POST'])
 @login_required
 def delete_photos(album_id):
-    album = Album.query.get_or_404(album_id)
-    
-    if album.owner != current_user:
-        flash('Permission denied.')
-        return redirect(url_for('index'))
-
     photo_ids = request.form.getlist('photo_ids')
-    for photo_id in photo_ids:
-        photo = Photo.query.get(photo_id)
-        if photo and photo.album_id == album.id:
-            file_path = os.path.join(app.root_path, 'static/uploads', photo.filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
+    
+    for p_id in photo_ids:
+        photo = Photo.query.get(p_id)
+        if photo:
+            filename = photo.filename
+
             db.session.delete(photo)
-            
-    db.session.commit()
-    flash(f'Selected photos deleted.')
-    return redirect(url_for('my_album', album_id=album.id))
+            db.session.commit() 
+
+            remaining_references = Photo.query.filter_by(filename=filename).count()
+
+            if remaining_references == 0:
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+    
+    flash("Selection processed.")
+    return redirect(url_for('my_album', album_id=album_id))
 
 @app.route('/album/<int:album_id>/edit', methods=['POST'])
 @login_required
