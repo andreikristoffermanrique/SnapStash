@@ -10,13 +10,11 @@ from app.models import Album, Photo, User
 def home():
     return redirect(url_for('login'))
 
-# --- MINIMALIST HOME PAGE ---
 @app.route('/index')
 @login_required
 def index():
     return render_template('index.html', user=current_user)
 
-# --- NEW DEDICATED ALBUMS PAGE WITH SEARCH ---
 @app.route('/albums_list')
 @login_required
 def albums_list():
