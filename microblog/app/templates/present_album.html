@@ -35,13 +35,12 @@
             animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- MAXIMIZED IMAGE LOGIC --- */
         .slide img {
             /* Fills screen while keeping arrows visible */
             max-width: 92vw; 
             max-height: 90vh;
             object-fit: contain;
-            border-radius: 4px; /* Sharper, professional look */
+            border-radius: 4px; 
             box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
@@ -50,13 +49,12 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Navigation Arrows (Larger for image_dbd340.png style) */
         .prev, .next {
             cursor: pointer;
             position: absolute;
             top: 0;
             height: 100%;
-            width: 10%; /* Wide hit area */
+            width: 10%; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -79,7 +77,6 @@
             background: linear-gradient(to left, rgba(255,255,255,0.05), transparent);
         }
 
-        /* Top Bar - Premium Minimal Look */
         .top-bar {
             position: absolute;
             top: 0;
@@ -92,7 +89,7 @@
             box-sizing: border-box;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
             z-index: 10;
-            opacity: 0; /* Hidden by default */
+            opacity: 0; 
             transition: opacity 0.4s ease;
         }
 
@@ -180,7 +177,6 @@
             countDisplay.innerText = slideIndex;
         }
 
-        // Keyboard navigation
         document.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowRight' || e.key === ' ') {
                 changeSlide(1);
